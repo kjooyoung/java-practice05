@@ -1,36 +1,44 @@
 package prob5;
 
-public class MyStack {
+public class MyStack<T> {
 	private int top;
-	private String[] buffer;
+	private T[] buffer;
 
 	@SuppressWarnings("unchecked")
 	public MyStack(int capacity) {
-		buffer = new String[capacity];
+		buffer = (T[])new Object[capacity];
 		top = -1;
 	}
 
-	public void push(String s) {
-		System.out.println(buffer.length);
-		for(int i=buffer.length-1; i>=0; i--) {
-			if(buffer[i]== null) {
-				buffer[i] = s;
-				top++;
- 			}
+	public void push(T s) {
+		// stack is full
+		if( top == buffer.length-1 ) { 
+			resize();
 		}
+		
+		buffer[++top] = s;
 	}
 
-	public String pop() throws MyStackException {
-		for(int i=0; i<buffer.length; i++) {
-			if(buffer[i] != null) {
-				top--;
-				return buffer[i];
-			}
+	public T pop() throws MyStackException {
+		if (isEmpty()) {
+			throw new MyStackException("stack is empty");
 		}
-		return "d";
+		
+		T result = buffer[top];
+		buffer[top--] = null;
+		
+		return result;
 	}
 
 	public boolean isEmpty() {
 		return top == -1;
+	}
+	
+	private void resize() {
+		T[] temp = (T[]) new Object[buffer.length * 2];
+		for(int i=0; i<=top; i++) {
+			temp[i] = buffer[i];
+		}
+		buffer = temp;
 	}
 }
